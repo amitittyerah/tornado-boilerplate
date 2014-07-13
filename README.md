@@ -1,6 +1,11 @@
 tornado-boilerplate -- a standard layout for Tornado apps
 ===============================================================================
 
+## Added 
+- SQLAlchemy
+- Token authentication
+- User and UserToken model
+
 ## Description
 
 tornado-boilerplate is an attempt to set up an convention for
