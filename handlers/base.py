@@ -1,9 +1,10 @@
 import json
 import tornado.web
 
+from Database.instance import *
+
 import logging
 logger = logging.getLogger('boilerplate.' + __name__)
-
 
 class BaseHandler(tornado.web.RequestHandler):
     """A class to collect common handler methods - all other handlers should
@@ -43,3 +44,7 @@ class BaseHandler(tornado.web.RequestHandler):
         arg = self.request.arguments[name]
         logger.debug("Found '%s': %s in JSON arguments" % (name, arg))
         return arg
+
+    @property
+    def backend(self):
+        return Instance.instance()

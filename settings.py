@@ -44,6 +44,12 @@ settings['static_path'] = MEDIA_ROOT
 settings['cookie_secret'] = "your-cookie-secret"
 settings['xsrf_cookies'] = True
 settings['template_loader'] = tornado.template.Loader(TEMPLATE_ROOT)
+settings['database_type'] = 'sqlite'
+settings['database_location'] = '%s%s' % (ROOT, 'dev.db')
+settings['database_username'] = ''
+settings['database_password'] = ''
+settings['database_port'] = ''
+settings['token_expiry'] = 1
 
 SYSLOG_TAG = "boilerplate"
 SYSLOG_FACILITY = logging.handlers.SysLogHandler.LOG_LOCAL2
