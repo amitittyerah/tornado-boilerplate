@@ -4,7 +4,7 @@ import logging.config
 from datetime import datetime, timedelta
 
 from models.user import UserToken
-from Database.instance import Instance
+from database.instance import Instance
 
 log = logging.getLogger("root")
 

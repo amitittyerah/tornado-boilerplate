@@ -1,7 +1,7 @@
 import json
 import tornado.web
 
-from Database.instance import *
+from database.instance import *
 
 import logging
 logger = logging.getLogger('boilerplate.' + __name__)
