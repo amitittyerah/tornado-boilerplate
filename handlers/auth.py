@@ -1,5 +1,6 @@
 import logging
 import logging.config
+import json
 
 from datetime import datetime, timedelta
 
@@ -18,22 +19,22 @@ def token_authenticate():
 
     def wrapper(self, transforms, *args, **kwargs):
         def _request_basic_auth(self):
+            print 'writing basic auth'
             if self._headers_written:
                 raise Exception('headers have already been written')
-
-            self.set_status(401)
+            self.write(json.dumps({'test': 'false'}))
             self.finish()
             return False
 
         request = self.request
-        clazz = self.__class__
-        log.debug('intercepting for class : %s', clazz)
         try:
-            token = request.headers.get('token')
+            token = request.arguments.get('token')[0]
             if not token:
+                print 'no token'
                 return _request_basic_auth(self)
 
             session = Instance().get_session()
+
             user_token = session.query(UserToken)\
                 .filter(UserToken.token == token)\
                 .filter(UserToken.expires > datetime.utcnow())\
@@ -44,9 +45,10 @@ def token_authenticate():
                 self.user = user_token.user
 
             else:
+                print 'no user token'
                 return _request_basic_auth(self)
         except Exception, e:
-            print e
+            print 'exception ' + e
             return _request_basic_auth(self)
         return True
 

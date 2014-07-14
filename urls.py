@@ -1,9 +1,8 @@
-from handlers.user import RegisterHandler
-from handlers.user import LoginHandler
-from handlers.user import TestAuthHandler
+from handlers.user import RegisterHandler, LoginHandler, LogoutHandler
+from handlers.generic import GenericHandler
 
 url_patterns = [
     (r"/register", RegisterHandler),
     (r"/login", LoginHandler),
-    (r"/test", TestAuthHandler)
+    (r"/api/(?P<cls>[^\/]+)/?(?P<slug>[^\/]+)?/", GenericHandler),
 ]
