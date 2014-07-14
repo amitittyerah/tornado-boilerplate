@@ -5,6 +5,8 @@ tornado-boilerplate -- a standard layout for Tornado apps
 - SQLAlchemy
 - Token authentication
 - User and UserToken model
+- Generic CRUD REST API 
+    - http://url.com/api/Class/<optional>slug
 
 ## Description
 
