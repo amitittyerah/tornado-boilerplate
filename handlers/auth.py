@@ -1,13 +1,20 @@
 import logging
 import logging.config
-import json
 
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from models.user import UserToken
 from database.instance import Instance
 
-log = logging.getLogger("root")
+log = logging.getLogger("auth")
+
+
+def get_user(token):
+    session = Instance().get_session()
+    return session.query(UserToken) \
+        .filter(UserToken.token == token) \
+        .filter(UserToken.expires > datetime.utcnow()) \
+        .one()
 
 
 def token_authenticate():
@@ -18,39 +25,22 @@ def token_authenticate():
     """
 
     def wrapper(self, transforms, *args, **kwargs):
-        def _request_basic_auth(self):
-            print 'writing basic auth'
-            if self._headers_written:
-                raise Exception('headers have already been written')
-            self.write(json.dumps({'test': 'false'}))
-            self.finish()
-            return False
 
         request = self.request
         try:
             token = request.arguments.get('token')[0]
             if not token:
-                print 'no token'
-                return _request_basic_auth(self)
+                return False
 
-            session = Instance().get_session()
-
-            user_token = session.query(UserToken)\
-                .filter(UserToken.token == token)\
-                .filter(UserToken.expires > datetime.utcnow())\
-                .one()
+            user_token = get_user(token)
 
             if user_token:
                 self.token = user_token
                 self.user = user_token.user
-
-            else:
-                print 'no user token'
-                return _request_basic_auth(self)
-        except Exception, e:
-            print 'exception ' + e
-            return _request_basic_auth(self)
-        return True
+                return True
+        except:
+            pass
+        return False
 
     return wrapper
 
@@ -65,12 +55,12 @@ def interceptor(func):
     def classwrapper(cls):
         def wrapper(old):
             def inner(self, transforms, *args, **kwargs):
-                log.debug('Invoking wrapper %s', func)
                 ret = func(self, transforms, *args, **kwargs)
                 if ret:
                     return old(self, transforms, *args, **kwargs)
                 else:
-                    return ret
+                    self._transforms = transforms
+                    return self._unauthorized()
 
             return inner
 

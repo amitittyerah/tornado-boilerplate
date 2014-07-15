@@ -48,3 +48,12 @@ class BaseHandler(tornado.web.RequestHandler):
     @property
     def backend(self):
         return Instance.instance()
+
+    def _unauthorized(self):
+
+        self.set_status(401)
+        self.write({
+            'error': True,
+            'message': 'Unauthorized'
+        })
+        self.finish()
